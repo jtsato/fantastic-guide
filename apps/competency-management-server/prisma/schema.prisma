@@ -1,0 +1,58 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DB_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Tool {
+  createdAt                  DateTime                   @default(now())
+  description                String?
+  developerToolProficiencies DeveloperToolProficiency[]
+  id                         String                     @id @default(cuid())
+  name                       String?
+  updatedAt                  DateTime                   @updatedAt
+}
+
+model DeveloperToolProficiency {
+  createdAt          DateTime          @default(now())
+  developer          Developer?        @relation(fields: [developerId], references: [id])
+  developerId        String?
+  id                 String            @id @default(cuid())
+  proficiencyLevel   ProficiencyLevel? @relation(fields: [proficiencyLevelId], references: [id])
+  proficiencyLevelId String?
+  tool               Tool?             @relation(fields: [toolId], references: [id])
+  toolId             String?
+  updatedAt          DateTime          @updatedAt
+}
+
+model Developer {
+  createdAt                  DateTime                   @default(now())
+  developerToolProficiencies DeveloperToolProficiency[]
+  email                      String?
+  id                         String                     @id @default(cuid())
+  name                       String?
+  updatedAt                  DateTime                   @updatedAt
+}
+
+model ProficiencyLevel {
+  createdAt                  DateTime                   @default(now())
+  developerToolProficiencies DeveloperToolProficiency[]
+  id                         String                     @id @default(cuid())
+  levelName                  String?
+  updatedAt                  DateTime                   @updatedAt
+}
+
+model User {
+  createdAt DateTime @default(now())
+  email     String?  @unique
+  firstName String?
+  id        String   @id @default(cuid())
+  lastName  String?
+  password  String
+  roles     Json
+  updatedAt DateTime @updatedAt
+  username  String   @unique
+}
